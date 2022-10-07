@@ -27,8 +27,9 @@ from micropython import const
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/skerr92/abracon_rtc_circuitpython.git"
 
-ADDRESS = (0x56)
+ADDRESS = (0x68)
 
+# TODO: add register macros
 # Registers 0x00 - 0x0F
 
 
@@ -39,40 +40,41 @@ class ABRA_RTC:
       self._buffer = bytearray(2)
       self.reset()
 
-    def _write_register_byte(self, register, value):
+    def get_seconds():
+        with self._i2c as dev:
+            res = bytearray(1)
+            dev.write_then_readinto(bytes([0x01]), self._buffer, in_end=1)
+            return int(res[0])
 
+    def get_minute():
+        with self._i2c as dev:
+            dev.write_then_readinto(bytes([0x02]), self._buffer, in_end=1)
+            return int(res[0])
 
-    def _read_register_byte(self, register, result, length=None):
+    def get_hour():
+        with self._i2c as dev:
+            dev.write_then_readinto(bytes([0x03]), self._buffer, in_end=1)
+            return int(res[0])
 
+    def set_freq_comp(val):
+        with self._i2c as dev:
+            dev.write(bytes([0x08,val]))
 
-    def reset(self):
+    def set_seconds(secs):
+        with self._i2c as dev:
+            dev.write(bytes([0x01,secs]))
+            dev.write_then_readinto(bytes([0x01]), self._buffer, in_end=1)
+            #print("seconds: ", res[0])
 
+    def set_minute(min):
+        with self._i2c as dev:
+            int(min)
+            dev.write(bytes([0x02,min]))
+            dev.write_then_readinto(bytes([0x02]), self._buffer, in_end=1)
+            #print("minutes: ", res[0])
 
-    def set_time(self, time):
-
-
-    def set_alarm(self, alarm):
-
-
-    def set_watchdog(self, value):
-
-
-    def get_second(self):
-
-
-    def get_minute(self):
-
-
-    def get_hour(self):
-
-
-    def get_day(self):
-
-
-    def get_month(self):
-
-
-    def get_year(self):
-
-
-    
+    def set_hour(hr):
+        with self._i2c as dev:
+            dev.write(bytes([0x03,hr]))
+            dev.write_then_readinto(bytes([0x03]), self._buffer, in_end=1)
+            #print("hours: ", res[0])
